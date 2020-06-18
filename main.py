@@ -32,7 +32,7 @@ def callback():
     return 'OK'
 
 #テキストメッセージが送信されたときの処理
-@handler.add(MassageEvent, message=TextMessage) #引数に処理したいイベントを指定してください
+@handler.add(MessageEvent, message=TextMessage) #引数に処理したいイベントを指定してください
 def handle_message(event):
     line_bot_api.reply_message(
         event.reply_token,
