@@ -36,21 +36,21 @@ def callback():
 def handle_message(event):
     text = event.message.text
     if text == 'おはよう':
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text='おはよう'))
-    else if text == 'こんにちは':
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text='こんにちは'))
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text='おはようございます!'))
+    elif text == 'こんにちは':
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text='こんにちは！'))
     else:
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(text='メッセージを受信しました'))
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=text))
 
 @handler.add(MessageEvent, message=ImageMessage)#引数に処理したいイベントを指定してください
-    def handle_message(event):
+def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text='画像を受信しました'))
 
 
 # フォローイベント時の処理
-@handler.add()  # 引数に処理したいイベントを指定してください
+@handler.add(FollowEvent)
 def handle_follow(event):
     # 誰が追加したかわかるように機能追加
     profile = line_bot_api.get_profile(event.source.user_id)  # 取得したプロフィールをprofileに格納しています
