@@ -1,4 +1,6 @@
 import os
+import errno
+import tempfile
 from flask import Flask, request, abort
 
 from linebot import (
@@ -97,7 +99,7 @@ def handle_content_message(event):
 def handle_follow(event):
     # 誰が追加したかわかるように機能追加
     profile = line_bot_api.get_profile(event.source.user_id)  # 取得したプロフィールをprofileに格納しています
-    line_bot_api.push_message(Uad6b2718be2fa3e98ecdd9e783aa83c8,
+    line_bot_api.push_message('Uad6b2718be2fa3e98ecdd9e783aa83c8',
                               TextSendMessage(text="表示名:{}\ユーザID:{}\n画像のURL:{}\nステータスメッセージ:{}" \
                                               .format(profile.display_name, profile.user_id, profile.picture_url,
                                                       profile.status_message)))
