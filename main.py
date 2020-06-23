@@ -17,6 +17,12 @@ from keras.preprocessing import image
 import tensorflow as tf
 import numpy as np
 
+# 普通の機能用
+app = Flask(__name__)
+
+line_bot_api = LineBotApi('85GuDL0mm/fktE/4QksofPV5VrmZQVbS2/VhT+F1wiu356SJk/lLyXUN+F4vqEr8Dd60RnjR32/7sQ0vcPvOrXUMUpoegYOXR6S04McNNJ1cn1CwwZyc7aHkC396KD+iszTsSPN5yKUXu752goSzGwdB04t89/1O/w1cDnyilFU=') #アクセストークンを入れてください
+handler = WebhookHandler('d9040f4fffb01b6c55812dc39bbdcd69') #Channel Secretを入れてください
+
 # 画像認識のためのコード
 static_tmp_path = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
 try:
@@ -26,14 +32,6 @@ except OSError as exc:
         pass
     else:
         raise
-
-
-# 普通の機能用
-app = Flask(__name__)
-
-line_bot_api = LineBotApi('85GuDL0mm/fktE/4QksofPV5VrmZQVbS2/VhT+F1wiu356SJk/lLyXUN+F4vqEr8Dd60RnjR32/7sQ0vcPvOrXUMUpoegYOXR6S04McNNJ1cn1CwwZyc7aHkC396KD+iszTsSPN5yKUXu752goSzGwdB04t89/1O/w1cDnyilFU=') #アクセストークンを入れてください
-handler = WebhookHandler('d9040f4fffb01b6c55812dc39bbdcd69') #Channel Secretを入れてください
-
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -57,15 +55,15 @@ def handle_message(event):
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text='おはようございます!'))
     elif text == 'こんにちは':
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text='こんにちは！'))
-    elif text == '?':
+    elif text == '画像認識して':
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text='だが断る！'))
     else:
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=event.message.text))
 
 # 以下、送信された画像を保存するためのコード
 class_label = ["飛行機","自動車","鳥","猫","鹿","犬","蛙","馬","船","トラック"]
-graph = tf.get_default_graph()# kerasのバグでこのコードが必要.
-model = load_model('my_model.h5')# 学習済みモデルをロードする
+graph = tf.get_default_graph() # kerasのバグでこのコードが必要.
+model = load_model('my_model.h5') # 学習済みモデルをロードする
 
 @handler.add(MessageEvent, message=ImageMessage)
 def handle_content_message(event):
@@ -91,7 +89,7 @@ def handle_content_message(event):
         result = model.predict(data)
         predicted = result.argmax() # 予測結果が格納されている
         pred_answer = "これは" + class_label[predicted] + "です。"
-        line_bot_api.reply_message(event.reply_token, [TextSendMessage(text=pred_answer)])
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=pred_answer))
 
 
 # フォローイベント時の処理
